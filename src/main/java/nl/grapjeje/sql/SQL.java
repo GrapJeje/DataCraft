@@ -17,17 +17,16 @@ public class SQL {
 
     public void execute(String cmd) {
         cmd = cmd.trim();
-        String[] parts = cmd.split(" ");
-        if (parts.length < 2) return;
-
+        String[] parts = cmd.split(" ", 2);
         String cmdWord = parts[0].toUpperCase();
+
         switch (cmdWord) {
             case "INSERT":
-                char c = parts[1].charAt(0);
-                Data.writeChar(c);
+                if (parts.length < 2) return;
+                Data.writeString(parts[1]);
                 break;
             case "SELECT":
-                System.out.println(Data.readChar());
+                System.out.println(Data.readString());
                 break;
         }
     }

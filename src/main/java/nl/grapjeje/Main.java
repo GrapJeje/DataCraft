@@ -37,7 +37,7 @@ public class Main {
         sql = new SQL();
         sql.init();
 
-        // Register events
+        // Register Events
         new ListenManager().init();
 
         // Register shutdown
