@@ -1,6 +1,5 @@
 package nl.grapjeje;
 
-import lombok.var;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.Event;
 
