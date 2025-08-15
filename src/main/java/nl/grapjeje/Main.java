@@ -6,6 +6,8 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.ServerProcess;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
+import net.minestom.server.instance.block.Block;
+import nl.grapjeje.listeners.ShutDownListener;
 
 import java.io.File;
 
@@ -36,6 +38,9 @@ public class Main {
 
         // Register events
         new ListenManager().init();
+
+        // Register shutdown
+        new ShutDownListener().shutDown();
 
         // Start
         server.start("0.0.0.0", 25565);

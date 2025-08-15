@@ -21,13 +21,18 @@ public class WorldSave {
 
     public void save(InstanceContainer instanceContainer) {
         System.out.println("Saving world...");
-        instanceContainer.saveChunksToStorage();
+        instanceContainer.saveChunksToStorage().join();
     }
 
     public InstanceContainer load(String loadPath) {
         InstanceContainer instanceContainer = MinecraftServer.getInstanceManager().createInstanceContainer();
         AnvilLoader loader = new AnvilLoader(loadPath);
         instanceContainer.setChunkLoader(loader);
+
+        // Create world folder
+        File worldFolder = new File(loadPath);
+        if (!worldFolder.exists()) worldFolder.mkdirs();
+
         return instanceContainer;
     }
 }
