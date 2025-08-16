@@ -1,19 +1,11 @@
 package nl.grapjeje.sql;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.instance.Chunk;
-import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.world.DimensionType;
 import nl.grapjeje.Main;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class Data {
     private static final Map<Block, Integer> woolData = new HashMap<>();
@@ -88,91 +80,5 @@ public class Data {
         return sb.toString();
     }
 
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Table {
-        // Layer 1,2 -> name
 
-        private Chunk chunk = null;
-
-        private static final int MAX_TABLE_LENGTH = 128;
-
-        public static Table getByName(String name) {
-            InstanceContainer instance = Main.getInstanceContainer();
-            for (Chunk chunk : instance.getChunks()) {
-                Pos startPos = new Pos(chunk.getChunkX() << 4, -64, chunk.getChunkZ() << 4);
-                String stored = readString(startPos);
-                if (stored.equals(name)) return new Table(chunk);
-            }
-            return null;
-        }
-
-        // API
-        public void create(String name) {
-            if (name.length() > MAX_TABLE_LENGTH) {
-                System.out.println("Table '" + name + "' is too long!");
-                return;
-            }
-            if (tableNameAlreadyExists(name)) {
-                System.out.println("Table '" + name + "' already exists!");
-                return;
-            }
-            this.chunk = getFirstEmptyChunk();
-            setName(name);
-            System.out.println("Successfully created table '" + name + "'");
-        }
-
-        // Private instance methods
-        private void setName(String name) {
-            Pos startPos = getChunkAnchor();
-            writeString(startPos, name);
-        }
-
-        private Pos getChunkAnchor() {
-            Objects.requireNonNull(this.chunk, "Table chunk has not been set yet!");
-            return new Pos(this.chunk.getChunkX() << 4, -64, this.chunk.getChunkZ() << 4);
-        }
-
-        // Static helpers
-        private static boolean tableNameAlreadyExists(String name) {
-            InstanceContainer instance = Main.getInstanceContainer();
-            for (Chunk chunk : instance.getChunks()) {
-                Pos startPos = new Pos(chunk.getChunkX() << 4, -64, chunk.getChunkZ() << 4);
-                String stored = readString(startPos);
-                if (stored.equals(name)) return true;
-            }
-            return false;
-        }
-
-        private static Chunk getFirstEmptyChunk() {
-            InstanceContainer instance = Main.getInstanceContainer();
-            DimensionType dimension = MinecraftServer.getDimensionTypeRegistry()
-                    .get(instance.getDimensionType());
-
-            int chunkX = 0;
-            int chunkZ = 0;
-
-            while (true) {
-                Chunk chunk = instance.getChunk(chunkX, chunkZ);
-                if (chunk != null && isChunkEmpty(chunk, dimension)) {
-                    return chunk;
-                }
-                chunkX++;
-            }
-        }
-
-        private static boolean isChunkEmpty(Chunk chunk, DimensionType dimension) {
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    for (int y = dimension.minY(); y < dimension.maxY(); y++) {
-                        if (!chunk.getBlock(x, y, z).isAir()) {
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-    }
 }
