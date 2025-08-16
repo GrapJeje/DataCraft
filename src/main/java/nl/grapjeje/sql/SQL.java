@@ -1,5 +1,9 @@
 package nl.grapjeje.sql;
 
+import nl.grapjeje.SQLCommand;
+import nl.grapjeje.sql.commands.CreateCommand;
+import nl.grapjeje.sql.commands.InsertCommand;
+
 import java.util.Scanner;
 
 public class SQL {
@@ -13,26 +17,21 @@ public class SQL {
                 this.execute(line);
             }
         }).start();
+
+        // Register Commands
+        new InsertCommand();
+        new CreateCommand();
     }
 
-    public void execute(String cmd) {
-        cmd = cmd.trim();
-        String[] parts = cmd.split(" ", 2);
-        String cmdWord = parts[0].toUpperCase();
+    public void execute(String input) {
+        input = input.trim().toUpperCase();
 
-        switch (cmdWord) {
-            case "INSERT":
-                if (parts.length < 2) return;
-                Data.writeString(parts[1]);
-                break;
-            case "SELECT":
-                System.out.println(Data.readString());
-                break;
-            case "CREATE":
-                if (parts.length < 2) return;
-                Data.Table table = new Data.Table();
-                table.create(parts[1]);
-                break;
+        for (SQLCommand cmd : SQLCommand.getCommands()) {
+            if (input.startsWith(cmd.getName())) {
+                String args = input.substring(cmd.getName().length()).trim();
+                cmd.execute(args);
+                return;
+            }
         }
     }
 }

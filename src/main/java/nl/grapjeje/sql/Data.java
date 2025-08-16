@@ -120,6 +120,7 @@ public class Data {
             }
             this.chunk = getFirstEmptyChunk();
             setName(name);
+            System.out.println("Successfully created table '" + name + "'");
         }
 
         // Private instance methods
