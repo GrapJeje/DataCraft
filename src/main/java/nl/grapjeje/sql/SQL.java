@@ -28,6 +28,11 @@ public class SQL {
             case "SELECT":
                 System.out.println(Data.readString());
                 break;
+            case "CREATE":
+                if (parts.length < 2) return;
+                Data.Table table = new Data.Table();
+                table.create(parts[1]);
+                break;
         }
     }
 }
